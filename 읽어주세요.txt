@@ -1,0 +1,36 @@
+1. app수준 gradle의 dependencies 항목에 밑의 코드를 추가 합니다.
+올려있는 코드엔 이미 추가되있는 상태입니다.
+
+compile 'com.estimote:sdk:0.10.4@aar'
+
+추가해야 비콘관련 라이브러리 임포트 가능 합니다.
+
+2. 비콘 신호잡는 기능은 mainactivity클래스 내에 있습니다(다른 클래스는 관련 없습니다)
+
+비콘매니저 리스너함수 내에서  onBeaconsDiscovered같은 함수를 오버라이딩 해서 쓰느는것으로
+이미 작성되어 있는 형식 이외로, 수정 변형 하여 맞게 사용하시면 될듯 합니다.
+
+public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+    if (!list.isEmpty()) {
+        String str = "";
+
+        Beacon nearestBeacon = list.get(0);
+
+        for (int vi = 0; list.size() > vi; vi++) {
+            nearestBeacon = list.get(vi);
+            str = str + "Rssi : " + nearestBeacon.getRssi()
+                    + " / " + "Mac_Add : " + nearestBeacon.getMacAddress().toString().substring(13, 18) + "\n";
+
+
+            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+
+        }
+
+
+    }
+}
+이런식으로 되있는데 비콘이발견 될때마다 nearesteBeacon에서 getRssi() rssi신호를 return하여 
+토스트메시지를 띄워주거나 하는 방식으로 되어있습니다.(측정용으로 썻던 앱이 있었는데, 해커톤때 급해서 날려먹은거 같네요). rssi신호값과 macaddress값을 이용해서 잘 사용하시면 될듯합니다.
+
+그밖에 클래스는 무시하셔도 되고, 토스트메시지가아니라 텍스트뷰나 다른 뷰에서 신호세기를 확인하시고 싶우시면 onBeaconDiscovered내만 적절하게 오버라이딩 하셔서 사용하시면 되겟네요. 
+
